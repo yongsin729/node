@@ -22,7 +22,7 @@
               <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8000/write">Write</a>
+              <a class="nav-link" href="#">Write</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">temporary</a>
@@ -32,13 +32,17 @@
         </div>
       </nav>
 
-      <div class="jumbotron">
-        <h1 class="display-4">Hello, world!</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-        <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-      </div>
+      <form action="/add" method="POST" style="padding: 30px;"> 
+        <div class="form-group">
+          <label>할 일</label>
+          <input type="text" class="form-control" name="title">
+        </div>
+        <div class="form-group">
+          <label>Due date</label>
+          <input type="text" class="form-control" name="date">
+        </div>
+        <button type="submit" class="btn btn-danger">Submit</button>
+      </form>
 
 
 
