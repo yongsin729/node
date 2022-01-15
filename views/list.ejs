@@ -32,9 +32,11 @@
         </div>
       </nav>
 
-    <%  for(let i=0;i<posts.length-1;i++){ %>  
-        <h4>할 일 리스트 : <%=posts[i].title%></h4>
+    <%  for(let i=0;i<posts.length;i++){ %>  
+      <div style="padding: 20px;">
+      <h4>할 일 리스트 : <%=posts[i].title%></h4>
       <p>할일 마감날짜 : <%=posts[i].title%></p>  
+    </div>
     <%}%>
 
 
