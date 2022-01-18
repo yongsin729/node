@@ -70,3 +70,11 @@ app.delete('/delete',function(요청,응답){
     응답.status(200).send({message:'성공'});
    });
 })
+
+app.get('/detail/:id',function(요청,응답){
+    db.collection('post').findOne({_id:parseInt(요청.params.id)},function(에러,결과){  //{_id:요청.params.id는 /detail/: id 에 있는 id의 값을 가져옴
+        console.log(결과);
+        응답.render('detail.ejs',{data:결과});
+    })
+    
+})
