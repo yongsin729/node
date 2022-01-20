@@ -47,7 +47,7 @@ app.get('/write',function(요청,응답){
     
 });
 app.post('/add',function(요청,응답){
-    응답.redirect('/list');
+    응답.redirect('/write');
     db.collection('counter').findOne({name:'게시물갯수'},function(에러,결과){
         console.log(결과.totalPost);
         let 총게시물갯수=결과.totalPost;
@@ -104,3 +104,41 @@ app.put('/edit',function(요청,응답){
         응답.redirect('/list');//응답시 이동 , 필수
     })
 })// put 태그
+
+const passport= require('passport');
+const LocalStrategy =require('passport-local').Strategy;
+const session =require('express-session');
+
+app.use(session({secret:'비밀코드',resave:true,saveUninitialized:false}));
+app.use(passport.initialize());
+app.use(passport.session());
+//app.use 미들웨어, 웹서버는 요청-응답 해주는 머신
+
+app.get('/login',function(요청,응답){
+    응답.render('login.ejs');
+})
+
+app.post('/login',passport.authenticate('local',{
+    failureRedirect:'/fail'//회원인증 실패하면 /fail로 이동. 
+}),function(요청,응답){
+   응답.redirect('/')
+})
+
+passport.use(new LocalStrategy({//인증하는 방법이 Strategy
+    usernameField: 'id',
+    passwordField: 'pw',
+    session: true,//세션을 저장할 것인지. 
+    passReqToCallback: false,
+  }, function (입력한아이디, 입력한비번, done) {
+    //console.log(입력한아이디, 입력한비번);
+    db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
+      if (에러) return done(에러)
+  
+      if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
+      if (입력한비번 == 결과.pw) {
+        return done(null, 결과)//done() -> (서버에러, 다 맞을시 사용자DB 데이터 단 틀렸을 경우 false ,에러메세지)
+      } else {
+        return done(null, false, { message: '비번틀렸어요' })
+      }
+    })
+  }));
