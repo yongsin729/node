@@ -115,6 +115,7 @@ app.use(passport.session());
 //app.use 미들웨어, 웹서버는 요청-응답 해주는 머신
 
 app.get('/login',function(요청,응답){
+    console.log(요청.user);
     응답.render('login.ejs');
 })
 
@@ -122,7 +123,8 @@ app.post('/login',passport.authenticate('local',{
     failureRedirect:'/fail'//회원인증 실패하면 /fail로 이동. 
 }),function(요청,응답){
    응답.redirect('/')
-})
+});
+
 
 passport.use(new LocalStrategy({//인증하는 방법이 Strategy
     usernameField: 'id',
@@ -135,10 +137,46 @@ passport.use(new LocalStrategy({//인증하는 방법이 Strategy
       if (에러) return done(에러)
   
       if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
-      if (입력한비번 == 결과.pw) {
+      if (입력한비번 == 결과.pw) {//암호화되지 않음  
         return done(null, 결과)//done() -> (서버에러, 다 맞을시 사용자DB 데이터 단 틀렸을 경우 false ,에러메세지)
       } else {
         return done(null, false, { message: '비번틀렸어요' })
       }
     })
   }));
+
+  passport.serializeUser(function (user, done) {
+    done(null, user.id)
+  });//세션을 저장시키는 코드 use id , -> 쿠키생성 ,
+  
+  passport.deserializeUser(function (아이디, done) {
+   db.collection('login').findOne({id:아이디},function(에러,결과){//여기서 아이디==test
+    done(null,결과);
+   })
+   
+  }); //로그인한 유저의 세션아이디를 바탕으로 개인정뵈를 DB에서 찾는 역할 
+
+  app.get('/mypage',로그인했니,function(요청,응답){//미들웨어  get요청시 마다 function work
+    응답.render('mypage.ejs',{사용자:요청.user});
+});
+
+function 로그인했니(요청, 응답, next) { 
+    if (요청.user) { 
+      next() 
+    } 
+    else { 
+      응답.send('로그인안하셨는데요?') 
+    } 
+  } 
+
+  app.get('/search',(요청,응답)=>{
+      console.log(요청.query.value);
+      db.collection('post').find({title:요청.query.value}).toArray((에러,결과)=>{
+          console.log(결과)
+          응답.render('search.ejs',{posts:결과});
+      });
+  })
+
+  app.get('/result',(요청,응답)=>{
+      응답.render('result.ejs');
+  })
