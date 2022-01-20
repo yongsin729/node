@@ -3,6 +3,8 @@ const app= express();
 app.use(express.urlencoded({extended: true})) ;
 
 const MongoClient = require('mongodb').MongoClient;
+const methodOverride=require('method-override');
+app.use(methodOverride('_method'))
 app.set('view engine','ejs');
 
 app.use('/public',express.static('public'));//스태틱 파일을 보관하기 위해public 폴더를 사용. 
@@ -45,7 +47,7 @@ app.get('/write',function(요청,응답){
     
 });
 app.post('/add',function(요청,응답){
-    응답.render('write.ejs');
+    응답.redirect('/list');
     db.collection('counter').findOne({name:'게시물갯수'},function(에러,결과){
         console.log(결과.totalPost);
         let 총게시물갯수=결과.totalPost;
@@ -90,6 +92,15 @@ app.get('/detail/:id',function(요청,응답){
 })
 
 app.get('/edit/:id',function(요청,응답){
+    db.collection('post').findOne({_id:parseInt(요청.params.id)},function(에러,결과){
+        응답.render('edit.ejs',{post:결과});
+    })
     
-    응답.render('edit.ejs')
 })
+
+app.put('/edit',function(요청,응답){
+    db.collection('post').updateOne({_id: parseInt(요청.body.id)},{$set:{title : 요청.body.title,date:요청.body.date}},function(에러,결과){
+        console.log('수정완료');
+        응답.redirect('/list');//응답시 이동 , 필수
+    })
+})// put 태그

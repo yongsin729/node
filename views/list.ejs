@@ -26,7 +26,8 @@
         <p>글번호: <%=posts[i]._id%></p>
         <h4><a href="http://localhost:8000/detail/<%=posts[i]._id %>" style="color:black">Title: <%=posts[i].title%></a></h4>
         <p>Due date : <%=posts[i].date%></p>  
-        <button class="btn btn-danger delete" data-id="<%=posts[i]._id%>">삭제</button>
+        <button class="btn btn-danger"><a href="/edit/<%=posts[i]._id%>" class="edit">Edit</a></button>
+        <button class="btn btn-danger delete" data-id="<%=posts[i]._id%>">Delete</button>
       </li>
       <%}%>
      

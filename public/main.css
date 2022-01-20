@@ -1,3 +1,10 @@
 body{
     font-family:'nanumsquare';
 }
+.edit{
+    color: white;
+}
+.edit:hover{
+    color: white;
+    text-decoration-line : none;
+}
